@@ -1,2 +1,4 @@
 ﻿  SWcamp_project.cpp
+C:\Users\gksru\Documents\programming\Cplus\SW캠프 with C\SWcamp_project\SWcamp_project.cpp(76,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\gksru\Documents\programming\Cplus\SW캠프 with C\SWcamp_project\SWcamp_project.cpp(102): warning C4172: 지역 변수 또는 임시: new_line의 주소를 반환하고 있습니다.
   SWcamp_project.vcxproj -> C:\Users\gksru\Documents\programming\Cplus\SW캠프 with C\SWcamp_project\Debug\SWcamp_project.exe
