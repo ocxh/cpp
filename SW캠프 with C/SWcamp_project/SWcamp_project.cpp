@@ -9,9 +9,13 @@ typedef struct Node
 	struct Node* rp;
 }Node;
 
+//메뉴 조작 함수
+int main_menu(); //메인 메뉴를 보여줌
+void ChangeNum(); //번호 수정 메뉴의 함수
+void View_std(); //번호로 수강생 조회
 //문자열 처리 함수
-void SearchW(char* st, char word[], int* index1, int* index2);
-char* Nstring(char* st, int index1, int index2, char Nword[]);
+void SearchW(char* st, char word[], int* index1, int* index2); //문자열에서 해당 단어의 맨앞, 뒤 인덱스 return
+char* Nstring(char* st, int index1, int index2, char Nword[]); //SearchW의 인덱스2개와 새로운단어로 새로운 문자열생성
 //노드 관련 함수
 void Insert(Node** start, char filename[]); //노드 추가
 void Delete(Node** start, char filename[]); //노드 삭제
@@ -22,27 +26,69 @@ void free_node(Node* start); //LinkedList free()
 
 int main()
 {
-	char filename[20];
-	char word[20];
-	char Rword[20];
-	Node* start_p = NULL;
+	printf("프로그램 실행 시 텍스트 파일이 깨지는 오류는 텍스트 파일을 재생성 해줘야 합니다.\n");
+	printf("프로그램 실행 시 라인이 덮어씌워지거나 줄바꿈이 되는 등의 오류가 발생하였습니다.\n\n");
+	main_menu();
+
+	return 0;
+}
+
+int main_menu()
+{
+	int option = 0;
+	while (1)
+	{
+		printf("==원하는 기능을 선택하세요==\n");
+		printf("1. 기존 번호 수정 2. 수강생 조회 3. 종료: ");
+		scanf("%d", &option);
+		printf("\n");
+
+		if (option == 1)
+		{
+			ChangeNum();
+			break;
+		}
+		else if (option == 2)
+		{
+			View_std();
+			break;
+		}
+		else if (option == 3)
+		{
+			printf("프로그램을 종료합니다\n");
+			break;
+		}
+		else {
+			printf("올바르지 않은 옵션값\n");
+		}
+		
+	}
+	return 0;
+}
+
+void ChangeNum()
+{
+	char filename[20]; //파일 이름
+	char word[20]; //검색할 단어
+	char Rword[20]; //변경할 단어
+	Node* start_p = NULL; //시작노드
 
 	//검색할 단어 입력 받기
-	printf("단어: ");
+	printf("기존 전화번호: ");
 	scanf("%s", word);
 	while (1)
 	{
 		//해당 단어 검색할 파일명 입력 받기
 		printf("파일 이름(0=종료): ");
 		scanf("%s", filename);
-		if(!strcmp(filename,"0")) break;
+		if (!strcmp(filename, "0")) break;
 
-		if (ckWord(filename, word))
+		if (ckWord(filename, word)) //해당 파일에 단어가 있으면 노드생성
 		{
 			Insert(&start_p, filename);
 		}
 	}
-	prtnode(start_p);
+	prtnode(start_p); //생성된 노드 출력
 	while (1)
 	{
 		//만들어진 Linked List에서 제외할 파일 입력
@@ -54,14 +100,41 @@ int main()
 	}
 	prtnode(start_p);
 
-	printf("수정할 단어: ");
+	printf("수정할 번호: ");
 	getc(stdin); //\n을 버퍼에서 빼오기(해당 코드 누락 시 gets_s 씹힘 
 	gets_s(Rword);
 	printf("%s\n", Rword);
-	Replace(&start_p, word, Rword);
+	Replace(&start_p, word, Rword); //노드 파일들의 기존 단어를 새로운 단어로 교체
 
-	free_node(start_p);
-	return 0;
+	free_node(start_p); //모든 노드에 대하여 free실행
+	return;
+}
+
+void View_std()
+{
+	char filename[20]; //파일 이름
+	char word[20]; //검색할 단어
+	char Rword[20]; //변경할 단어
+	Node* start_p = NULL; //시작노드
+
+	//검색할 학생 번호 입력 받기
+	printf("수강생 번호: ");
+	scanf("%s", word);
+	while (1)
+	{
+		//해당 번호 검색할 파일명 입력 받기
+		printf("과목 파일 이름(0=종료): ");
+		scanf("%s", filename);
+		if (!strcmp(filename, "0")) break;
+
+		if (ckWord(filename, word)) //해당 파일에 번호가 있으면 노드생성
+		{
+			Insert(&start_p, filename);
+		}
+	}
+	prtnode(start_p); //생성된 노드 출력
+
+	return;
 }
 
 void SearchW(char* st, char word[], int* index1, int* index2)
@@ -70,14 +143,16 @@ void SearchW(char* st, char word[], int* index1, int* index2)
 	char check_s[20] = "";
 	char w[20];
 
-	strcpy(s, st);
-	strcpy(w, word);
+	strcpy(s, st); //기존 문자열
+	strcpy(w, word); //기존 단어
 
 	for (int i = 0; i < strlen(s); i++)
 	{
+		//해당되는 단어가 있는 부분의 인덱스, +strlen(word)
 		memcpy(check_s, &s[i], strlen(word));
 		if (!strcmp(check_s, word))
 		{
+			//포인터로 값을 변경
 			*index1 = i + 1;
 			*index2 = i + strlen(word);
 		}
@@ -154,7 +229,7 @@ void Delete(Node** start, char filename[])
 				next_p->lp = pre_p;
 				free(now);
 			}
-			printf("[삭제완료] 파일명: %s\n", filename);
+			printf("[제외완료] 파일명: %s\n", filename);
 			return;
 		}
 		now = next_p;
@@ -180,30 +255,18 @@ void Replace(Node** start, char word[], char Rword[]) //기존 단어word, 교�
 
 			if (strstr(line, word) != NULL) //단어를 찾으면
 			{
-				printf("찾음: %s\n", line);
+				//printf("찾음: %s\n", line);
 				//새로운 문자열 생성
 				SearchW(line, word, &index1, &index2);
 				strcpy(new_line, Nstring(line, index1, index2, Rword));
-				printf("새로 만들어진 line: %s", new_line);
+				//printf("새로 만들어진 line: %s", new_line);
 				//파일 포인터를 해당 라인의 처음으로 옮김
 				if (alls == 0) fseek(fp, alls, SEEK_SET); //첫줄은 파일포인터 0부터
-				else fseek(fp, alls+1, SEEK_SET); //그 외에는 누적 문자열길이+1 만큼 이동
+				else fseek(fp, alls, SEEK_SET); //그 외에는 누적 문자열길이+1 만큼 이동
 
 				//새로운 문자열 쓰기
 				fputs(new_line, fp);
 				break;
-			//fscanf(fp, "%s", nword);
-			//nword[19] = NULL;
-			//if (!strcmp(word, nword))
-			//{
-			//	fseek(fp, -1*strlen(nword), SEEK_CUR);
-			//	fwrite(Rword, strlen(Rword), 1, fp);
-			//	for (int i = strlen(Rword); i < strlen(word)+1; i++)
-			//	{
-			//		fwrite("\0", 1, 1, fp);
-			//	}
-			//	printf("변경성공\n");
-			//	break;
 			}
 			alls += strlen(line)-1; //현재까지 읽은 줄 누적 길이
 		}
@@ -243,10 +306,10 @@ void prtnode(Node* start)
 {
 	Node* now = start;
 	
-	printf("---해당 단어가 포함된 파일 리스트---\n");
+	printf("---해당 번호가 포함된 수강파일 리스트---\n");
 	while (now != NULL)
 	{
-		printf("파일 이름: %s \n", now->fname);
+		printf("수강파일 이름: %s \n", now->fname);
 		now = now->rp;
 	}
 }
