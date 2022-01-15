@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="BSearchRecur.c" />
     <ClCompile Include="Fibonacci.c" />
+    <ClCompile Include="Hanoi.c" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
